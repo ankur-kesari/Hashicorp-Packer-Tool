@@ -1,0 +1,27 @@
+    {
+        "variables": {                                              
+            "aws_access_key": "{{env `AWS_ACCESS`}}",              
+            "aws_secret_key": "{{env `AWS_SECRET`}}"               
+        },
+        
+        "sensitive-variables": ["access_key", "secret_key"],
+
+        "builders": [
+        {
+            "type": "amazon-ebs",
+            "access_key": "{{user `aws_access_key`}}" ,
+            "secret_key": "{{user `aws_secret_key`}}",
+            "region": "ap-south-1",
+            "source_ami": "ami-05ba3a39a75be1ec4",
+            "instance_type": "t3a.small",
+            "ssh_username": "ubuntu",
+            "ami_name": "ankur-packer-ami"       
+        }
+    
+        ]
+       
+      
+
+    }
+
+   

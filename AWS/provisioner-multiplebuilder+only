@@ -1,0 +1,70 @@
+{
+    "variables": {                                              
+        "aws_access_key": "{{env `AWS_ACCESS`}}",              
+        "aws_secret_key": "{{env `AWS_SECRET`}}"               
+    },
+    
+    "sensitive-variables": ["access_key", "secret_key"],
+
+    "builders": [
+    {
+        "name": "dev-team",
+        "type": "amazon-ebs",
+        "access_key": "{{user `aws_access_key`}}" ,
+        "secret_key": "{{user `aws_secret_key`}}",
+        "region": "ap-south-1",
+        "source_ami": "ami-05ba3a39a75be1ec4",
+        "instance_type": "t3a.small",
+        "ssh_username": "ubuntu",
+        "ami_name": "ankur-dev-team{{timestamp}}"       
+    },
+    {
+        "name": "test-team",
+        "type": "amazon-ebs",
+        "access_key": "{{user `aws_access_key`}}" ,
+        "secret_key": "{{user `aws_secret_key`}}",
+        "region": "ap-south-1",
+        "source_ami": "ami-05ba3a39a75be1ec4",
+        "instance_type": "t3a.small",
+        "ssh_username": "ubuntu",
+        "ami_name": "ankur-test-team{{timestamp}}"       
+    },
+    {
+        "name": "prod-team",
+        "type": "amazon-ebs",
+        "access_key": "{{user `aws_access_key`}}" ,
+        "secret_key": "{{user `aws_secret_key`}}",
+        "region": "ap-south-1",
+        "source_ami": "ami-05ba3a39a75be1ec4",
+        "instance_type": "t3a.small",
+        "ssh_username": "ubuntu",
+        "ami_name": "ankur-prod-team{{timestamp}}"       
+    }
+
+    ],
+   
+    "provisioners": [
+    {
+        "type": "file",
+        "source": "./website/",
+        "destination": "/tmp"
+    },
+
+    {
+        "type": "shell",
+        "only": ["dev-team","test-team"],   
+        "inline": [
+
+            "sudo apt-get update -y",
+            "sudo apt-get upgrade -y",
+            "sudo apt install nginx -y",
+            "sudo cp -rvf /tmp/* /var/www/html/",
+            "sudo systemctl start nginx"
+        ]
+    }
+
+]
+
+
+}
+
