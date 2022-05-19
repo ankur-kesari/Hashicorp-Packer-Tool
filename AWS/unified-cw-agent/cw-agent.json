@@ -1,0 +1,60 @@
+{
+    "variables": {
+      "access_key": "{{env `AWS_ACCESS`}}",
+      "secret_key": "{{env `AWS_SECRET`}}"
+    },
+
+"sensitive-variables": ["access_key", "secret_key"],
+"builders": [
+  {
+    "type": "amazon-ebs",
+    "access_key": "{{user `access_key`}}",
+    "secret_key": "{{user `secret_key`}}",
+    "region": "ap-south-1",
+    "ami_name": "Ankur-Packer-CWAgent-{{timestamp}}",
+    "source_ami": "ami-05ba3a39a75be1ec4",
+    "temporary_iam_instance_profile_policy_document": 
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+              "Effect": "Allow",
+              "Action": [
+                  "cloudwatch:PutMetricData",
+                  "ec2:DescribeVolumes",
+                  "ec2:DescribeTags",
+                  "logs:PutLogEvents",
+                  "logs:DescribeLogStreams",
+                  "logs:DescribeLogGroups",
+                  "logs:CreateLogStream",
+                  "logs:CreateLogGroup"
+              ],
+              "Resource": "*"
+          },
+          {
+              "Effect": "Allow",
+              "Action": [
+                  "ssm:GetParameter"
+              ],
+              "Resource": "arn:aws:ssm:*:*:parameter/AmazonCloudWatch-*"
+          }
+      ]
+  },
+
+    "instance_type": "t3a.small",
+    "ssh_username": "ubuntu"
+  }
+],
+"provisioners": [
+  {
+    "type": "shell",
+    "script": "config.sh"
+  }
+],
+"post-processors": [
+  {
+    "type": "manifest",
+    "output": "output.json"
+  }
+]
+}
