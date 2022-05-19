@@ -1,0 +1,53 @@
+{
+    "variables": {                                              
+        "aws_access_key": "{{env `AWS_ACCESS`}}",              
+        "aws_secret_key": "{{env `AWS_SECRET`}}",
+        "db_name"       : "{{env `DB_NAME`}}", 
+        "db_username"   : "{{env `DB_USERNAME`}}",
+        "db_password"   : "{{env `DB_PASSWORD`}}",
+        "db_host"       : "{{env `DB_HOST`}}"                        
+    },
+    
+    "sensitive-variables": ["access_key", "secret_key"],
+
+    "builders": [
+    {
+        "type": "amazon-ebs",
+        "access_key": "{{user `aws_access_key`}}" ,
+        "secret_key": "{{user `aws_secret_key`}}",
+        "region": "ap-south-1",
+        "source_ami": "ami-05ba3a39a75be1ec4",
+        "instance_type": "t3a.small",
+        "ssh_username": "ubuntu",
+        "ami_name": "ankur-packer-ami"       
+    }
+
+    ],
+   
+    "provisioners": [
+    {
+        "type": "file",
+        "source": "./nginx-conf",
+        "destination": "/tmp/"
+    },
+
+    {
+        "type": "shell",
+        "script": "wordpress.sh"
+    },
+    {
+        "type": "shell",
+        "inline": [
+            "sudo sed -i 's/database_name_here/{{user `db_name`}}/' /var/www/wordpress/wp-config.php",
+            "sudo sed -i 's/username_here/{{user `db_username`}}/' /var/www/wordpress/wp-config.php",
+            "sudo sed -i 's/password_here/{{user `db_password`}}/' /var/www/wordpress/wp-config.php",
+            "sudo sed -i 's/localhost/{{user `db_host`}}/' /var/www/wordpress/wp-config.php"
+        ]
+    }
+
+
+]
+
+
+}
+

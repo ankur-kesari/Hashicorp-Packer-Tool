@@ -1,0 +1,25 @@
+sudo sed -i 's/database_name_here/wordpress/' /var/www/wordpress/wp-config.php
+sudo sed -i 's/username_here/admin/' /var/www/wordpress/wp-config.php
+sudo sed -i 's/password_here/12345678/' /var/www/wordpress/wp-config.php
+sudo sed -i 's/localhost/ankur-database-2.cfdyrms3ajre.ap-south-1.rds.amazonaws.com/' /var/www/wordpress/wp-config.php
+
+Environment Variable Setup:
+
+Now we can do by setting up env variable for above code
+
+export AWS_ACCESS=my_access_key
+export AWS_SECRET=my_secret_key
+export DB_NAME=wordpress
+export DB_USERNAME=admin
+export DB_PASSWORD=12345678
+export DB_HOST=ankur-rds.cfdyrms3ajre.ap-south-1.rds.amazonaws.com
+
+Now check your env variable(env variable present in current ubuntu tab - get vanish if open new ubuntu tab-try to work on same tab)
+
+echo $AWS_ACCESS
+echo $AWS_SECRET
+echo $ DB_NAME
+echo $DB_USERNAME
+echo $DB_PASSWORD
+echo $DB_HOST
+
